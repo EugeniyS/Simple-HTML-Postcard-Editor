@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Creating a postcard</title>
+        <style>
+            *{
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            .card{
+                width:100%;
+                height: 70vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .control{
+                padding: 2%;
+                width:100%;
+                height: 30vh;
+                display: flex;
+                justify-content: space-around;
+                align-items:center;
+            }
+            .control_element{
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items:center;
+            }
+            .control_element_font{
+                width:15%;
+            }
+            .control_element_align{
+                width:30%;
+            }
+            .controle_element_text_size{
+                width:15%;
+            }
+            .control_element_final_button{
+                width:20%;
+            }
+            .control_element select{
+                width: 100%;
+                padding:2%;
+                font-size: 17px;
+                font-weight: bold;
+                font-family: "Comic Sans MS", cursive, sans-serif;
+            }
+            .control_element input{
+                width: 100%;
+            }
+            .control_element button{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 17px;
+                font-weight: bold;
+                font-family: "Comic Sans MS", cursive, sans-serif;
+                padding:2%;
+                background-color: transparent;
+                white-space: nowrap;
+                border-radius: 0.5em;
+            }
+            .control_element button:hover{
+                background-color:  #C0C0C0;
+            }
+            .control_element_title{
+                margin-bottom: 5%;
+                font-size: 20px;
+                font-weight: bold;
+                font-family: "Comic Sans MS", cursive, sans-serif;
+            }
+            .control_element_buttons{
+                width:100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items:center;
+            }
+            .control_element_buttons_row{
+                width:100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .control_element_buttons_row ~ .control_element_buttons_row{
+                margin-top: 2%;
+            }
+            .control_element_buttons_row button{
+                width:30%;
+            }
+            .control_element_buttons_row button ~ button{
+                margin-left: 2%;
+            }
+            .arrow_container{
+                width:5%;
+                display: flex;
+                justify-content: center;
+                align-items:center;
+            }
+            .arrow_container button{
+                background-color: transparent;
+                border: 0;
+            }
+            .arrow_container button:hover{
+                .arrow{
+                    width:70%;
+                }
+            }
+            .text_container{
+                width:20%;
+                height:100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding-top:1%;
+            }
+            textarea{
+                resize: none;
+                width:80%;
+                flex-grow: 1;
+                padding:5%;
+                text-align: start;
+            }
+            .ta_start{
+                text-align: start;
+            }
+            .ta_center{
+                text-align: center;
+            }
+            .ta_end{
+                text-align: end;
+            }
+            .arrow{
+                width:50%;
+            }
+            .card_container{
+                width:70%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items:center;
+            }
+            .postcard{
+                height: 100%;
+                width:100%;
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-position: center;
+                display: flex;
+                padding:2%;
+            }
+            .postcard_text{
+                overflow: hidden;
+                max-width: 100%;
+                max-height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            .postcard_text_row{
+                display: flex;
+                align-items: center;
+                width: 100%;
+                flex-wrap: wrap;
+            }
+            .postcard_jc_center{
+                justify-content: center;
+            }
+            .postcard_jc_start{
+                justify-content: flex-start;
+            }
+            .postcard_jc_end{
+                justify-content: flex-end;
+            }
+            .postcard_ai_center{
+                align-items: center;
+            }
+            .postcard_ai_start{
+                align-items: flex-start;
+            }
+            .postcard_ai_end{
+                align-items: flex-end;
+            }
+            .postcards_url{
+                position: absolute;
+                display: none;
+            }
+            .fonts_url{
+                position: absolute;
+                display: none;
+            }
+            .d-none{
+                display: none;
+            }
+            .d-flex{
+                display: flex;
+            }
+            #result_container{
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            .how_download{
+                margin: 3% 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 17px;
+                font-weight: bold;
+                font-family: "Comic Sans MS", cursive, sans-serif;
+                padding:1%;
+                background-color: transparent;
+                white-space: nowrap;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <div class="arrow_container"><button onclick="changePrevImg()"><svg class="arrow" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="m21.5 28c-.256 0-.512-.098-.707-.293l-11-11c-.391-.391-.391-1.023 0-1.414l11-11c.391-.391 1.023-.391 1.414 0s.391 1.023 0 1.414l-10.293 10.293 10.293 10.293c.391.391.391 1.023 0 1.414-.195.195-.451.293-.707.293z" fill="rgb(0,0,0)"/></svg></button></div>
+            <div class="card_container">
+                <div class="postcard postcard_jc_start postcard_ai_start" id="postcard">
+                    <div class="postcard_text" id="postcard_text">
+                    </div>
+                </div>
+            </div>
+            <div class="arrow_container"><button onclick="changeNextImg()"><svg class="arrow" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="m10.5 28c-.256 0-.512-.098-.707-.293-.391-.391-.391-1.023 0-1.414l10.293-10.293-10.293-10.293c-.391-.391-.391-1.023 0-1.414s1.023-.391 1.414 0l11 11c.391.391.391 1.023 0 1.414l-11 11c-.195.195-.451.293-.707.293z" fill="rgb(0,0,0)"/></svg></button></div>
+            <div class="text_container">
+                <div class="control_element_title">ВВОД ТЕКСТА</div>
+                <textarea name="" id="text_input" class="ta_start"></textarea>
+            </div>
+        </div>
+        <div class="control">
+            <div class="control_element control_element_font">
+                <div class="control_element_title">ВЫБОР ШРИФТА</div>
+                <select name="font" id="fonts_changer" title="Font">
+                    
+                </select>
+            </div>
+            <div class="control_element control_element_align">
+                <div class="control_element_title">ВЫРАВНИВАНИЕ ТЕКСТА</div>
+                <div class="control_element_buttons">
+                    <div class="control_element_buttons_row">
+                        <button onclick="changeTextAlign('up-left')">ВЕРХ-ЛЕВО</button>
+                        <button onclick="changeTextAlign('up-center')">ВЕРХ-ЦЕНТР</button>
+                        <button onclick="changeTextAlign('up-right')">ВЕРХ-ПРАВО</button>
+                    </div>
+                    <div class="control_element_buttons_row">
+                        <button onclick="changeTextAlign('center-left')">ЦЕНТР-ЛЕВО</button>
+                        <button onclick="changeTextAlign('center-center')">ЦЕНТР</button>
+                        <button onclick="changeTextAlign('center-right')">ЦЕНТР-ПРАВО</button>
+                    </div>
+                    <div class="control_element_buttons_row">
+                        <button onclick="changeTextAlign('down-left')">НИЗ-ЛЕВО</button>
+                        <button onclick="changeTextAlign('down-center')">НИЗ-ЦЕНТР</button>
+                        <button onclick="changeTextAlign('down-right')">НИЗ-ПРАВО</button>
+                    </div>
+                </div>
+            </div>
+            <div class="control_element controle_element_text_size">
+                <div class="control_element_title">РАЗМЕР ТЕКСТА</div>
+                <input type="range" min="30" max="180" value="70" id="text_height">
+            </div>
+            <div class="control_element control_element_final_button">
+                <button onclick="addImg()">СФОРМИРОВАТЬ КАРТИНКУ</button>
+            </div>
+        </div>
+        <div class="d-none" id="result_container">
+            <div id="result">
+
+            </div>
+            <div id="how_download" class="how_download">Для сохранения нажмите на картинку праврой кнопкой мыши и выберите пункт "Сохранить изображение как..."</div>
+        </div>
+        <div class="postcards_url">pic/card_1.jpg</div>
+        <div class="postcards_url">pic/card_2.jpg</div>
+        <div class="postcards_url">pic/card_3.jpg</div>
+        <div class="postcards_url">pic/card_4.jpg</div>
+        <div class="postcards_url">pic/card_5.jpg</div>
+        <div class="postcards_url">pic/card_6.jpg</div>
+        <div class="fonts_url">pic/font/</div>
+        <script type="text/javascript" src="js/html2canvas.min.js">
+        </script>
+        <script>
+            var postcards_url=[];
+            var postcard_id=0;
+
+            var fonts_url=[];
+            var font_id=0;
+            var text_input;
+
+            var text_height=70;
+
+            var text_align_all="up-left";
+
+            window.onload = () =>{
+                var postcards_url_elements=document.getElementsByClassName("postcards_url");
+                var fonts_url_elements=document.getElementsByClassName("fonts_url");
+                var fonts_changer=document.getElementById("fonts_changer");
+
+                var text_height_input=document.getElementById("text_height");
+
+                text_input=document.getElementById("text_input");
+
+                text_height_input.value=text_height;
+
+                for (var i=0;i<postcards_url_elements.length;i++){
+                    postcards_url[i]=postcards_url_elements[i].textContent;
+                    if(i==0){
+                        postcard.style.backgroundImage="url('"+postcards_url[0]+"')";
+                    }
+                }
+
+                for (var i=0;i<fonts_url_elements.length;i++){
+                    fonts_url[i]=fonts_url_elements[i].textContent;
+                    console.log(fonts_url[i]);
+
+                    var element=document.createElement('option');
+                    element.text="Шрифт "+(i+1);
+                    element.value=i;
+                    fonts_changer.add(element,null);
+                    if(i==0){
+                        fonts_changer.options[0].selected=true;
+                    }
+                }
+
+                text_input.addEventListener('change', function (event) {
+                    changeText(text_input.value, text_height);
+                });
+
+                fonts_changer.addEventListener('change', function (event) {
+                    var last_id=font_id;
+                    font_id=fonts_changer.selectedIndex;
+                    if(font_id>=fonts_url.length||font_id<0){
+                        alert("Шрифта с данным номером не существует.");
+                        font_id=last_id;
+                        fonts_changer.selectedIndex=font_id;
+                    }
+                    changeText(text_input.value, text_height);
+                });
+
+                text_height_input.addEventListener('change', function (event) {
+                    text_height=text_height_input.value;
+                    changeText(text_input.value, text_height);
+                });
+            }
+            function changeNextImg(){
+                postcard=document.getElementById("postcard");
+                postcard_id++;
+                if (postcard_id>=postcards_url.length){
+                    postcard_id=0;
+                }
+                postcard.style.backgroundImage="url('"+postcards_url[postcard_id]+"')";
+            }
+
+            function changePrevImg(){
+                postcard=document.getElementById("postcard");
+                postcard_id--;
+                if (postcard_id<0){
+                    postcard_id=postcards_url.length-1;
+                }
+                postcard.style.backgroundImage="url('"+postcards_url[postcard_id]+"')";
+            }
+
+            function changeText(text, height){
+                var result = "";
+                var ch = "";
+                var postcard_text=document.getElementById("postcard_text");
+                postcard_text.innerHTML="";
+
+                for (var count = 0; count < text.length; count++) {
+                    ch = text.substr(count,1).charCodeAt(0);
+                    var text_row;
+                    if (count==0){
+                        text_row=document.createElement("div");
+                        text_row.classList.add("postcard_text_row");
+                    }
+
+                    if(ch==10){
+                        if(count==0){
+                            continue;
+                        }
+                        if(text_row.innerHTML === ""){
+                            var element=document.createElement('img');
+                            element.src=fonts_url[font_id]+"32.png";
+                            element.height=height;
+                            text_row.appendChild(element);
+                        }
+                        postcard_text.appendChild(text_row);
+                        if(count<text.length-1){
+                            text_row=document.createElement("div");
+                            text_row.classList.add("postcard_text_row");
+                        }
+                        continue;
+                    }
+
+                    var element=document.createElement('img');
+                    element.src=fonts_url[font_id]+ch+".png";
+                    element.height=height;
+                    text_row.appendChild(element);
+
+                    if(count == text.length-1){
+                        postcard_text.appendChild(text_row);
+                    }
+                }
+                changeTextAlign(text_align_all);
+            }
+
+            function changeTextAlign(text_align){
+                text_align_all=text_align;
+                text_align_vertical=text_align.split('-')[0];
+                text_align_horizontal=text_align.split('-')[1];
+                changeTextAlignVertical(text_align_vertical);
+                changeTextAlignHorizontal(text_align_horizontal);
+            }
+
+            function changeTextAlignVertical(text_align_vertical){
+                postcard=document.getElementById("postcard");
+                postcard.classList.remove("postcard_ai_start");
+                postcard.classList.remove("postcard_ai_center");
+                postcard.classList.remove("postcard_ai_end");
+                switch(text_align_vertical){
+                    case "up":      postcard.classList.add("postcard_ai_start");
+                                    break;
+                    case "center":  postcard.classList.add("postcard_ai_center");
+                                    break;
+                    case "down":    postcard.classList.add("postcard_ai_end");
+                                    break;
+                }
+            }
+
+            function changeTextAlignHorizontal(text_align_horizontal){
+                var postcard_text_rows=document.getElementsByClassName("postcard_text_row");
+                postcard=document.getElementById("postcard");
+                postcard.classList.remove("postcard_jc_start");
+                postcard.classList.remove("postcard_jc_center");
+                postcard.classList.remove("postcard_jc_end");
+                text_input.classList.remove("ta_start");
+                text_input.classList.remove("ta_center");
+                text_input.classList.remove("ta_end");
+                if(postcard_text_rows.length!=0&&postcard_text_rows!=null){
+                    Array.from(postcard_text_rows).forEach((el) => {
+                        el.classList.remove('postcard_jc_start'); 
+                        el.classList.remove('postcard_jc_center'); 
+                        el.classList.remove('postcard_jc_end');
+                    });
+                }
+                switch(text_align_horizontal){
+                    case "left":    postcard.classList.add("postcard_jc_start");
+                                    text_input.classList.add("ta_start");
+                                    if(postcard_text_rows.length!=0&&postcard_text_rows!=null){
+                                        Array.from(postcard_text_rows).forEach((el) => {
+                                            el.classList.add('postcard_jc_start'); 
+                                        });
+                                    }
+                                    break;
+                    case "center":  postcard.classList.add("postcard_jc_center");
+                                    text_input.classList.add("ta_center");
+                                    if(postcard_text_rows.length!=0&&postcard_text_rows!=null){
+                                        Array.from(postcard_text_rows).forEach((el) => {
+                                            el.classList.add('postcard_jc_center'); 
+                                        });
+                                    }
+                                    break;
+                    case "right":   postcard.classList.add("postcard_jc_end");
+                                    text_input.classList.add("ta_end");
+                                    if(postcard_text_rows.length!=0&&postcard_text_rows!=null){
+                                        Array.from(postcard_text_rows).forEach((el) => {
+                                            el.classList.add('postcard_jc_end');
+                                        });
+                                    }
+                                    break;
+                }
+            }
+
+            function addImg(){
+                html2canvas(document.getElementById("postcard")).then(function(canvas) {
+                    document.getElementById("result_container").classList.remove("d-none");
+                    document.getElementById("result_container").classList.add("d-flex");
+                    var result=document.getElementById("result");
+                    result.innerHTML="";
+                    result.appendChild(canvas);
+                    document.getElementById('result').scrollIntoView(true);
+                });
+            }
+        </script>
+    </body>
+</html>
