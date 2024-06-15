@@ -217,6 +217,10 @@
                 background-color: transparent;
                 white-space: nowrap;
             }
+            .word{
+                display: flex;
+                flex-wrap: nowrap;
+            }
         </style>
     </head>
     <body>
@@ -287,12 +291,15 @@
         <script>
             var postcards_url=[];
             var postcard_id=0;
+            var images=[];
 
             var fonts_url=[];
             var font_id=0;
             var text_input;
 
             var text_height=70;
+
+            var padding=0.02;
 
             var text_align_all="up-left";
 
@@ -346,6 +353,17 @@
                     text_height=text_height_input.value;
                     changeText(text_input.value, text_height);
                 });
+
+                window.onresize=()=>{
+                    for(var count=0;count<images.length;count++){
+                        if(images[count]){
+                            images[count].onload=null;
+                            images[count].onerror=null;
+                            images[count]=null;
+                        }
+                    }
+                    changeText(text_input.value, text_height);
+                }
             }
             function changeNextImg(){
                 postcard=document.getElementById("postcard");
@@ -365,48 +383,164 @@
                 postcard.style.backgroundImage="url('"+postcards_url[postcard_id]+"')";
             }
 
-            function changeText(text, height){
+
+
+            async function changeText(text, height){
                 var result = "";
                 var ch = "";
+
                 var postcard_text=document.getElementById("postcard_text");
                 postcard_text.innerHTML="";
 
+                var last_ch_space=false;
+
+                var text_row;
+                var word;
+
+                var row_width=0;
+                var word_width=0;
+
+                images=[];
+
                 for (var count = 0; count < text.length; count++) {
                     ch = text.substr(count,1).charCodeAt(0);
-                    var text_row;
-                    if (count==0){
-                        text_row=document.createElement("div");
-                        text_row.classList.add("postcard_text_row");
-                    }
 
-                    if(ch==10){
-                        if(count==0){
-                            continue;
-                        }
-                        if(text_row.innerHTML === ""){
-                            var element=document.createElement('img');
-                            element.src=fonts_url[font_id]+"32.png";
-                            element.height=height;
-                            text_row.appendChild(element);
-                        }
-                        postcard_text.appendChild(text_row);
-                        if(count<text.length-1){
-                            text_row=document.createElement("div");
-                            text_row.classList.add("postcard_text_row");
-                        }
-                        continue;
-                    }
+                    await new Promise((resolve, reject) => {
 
-                    var element=document.createElement('img');
-                    element.src=fonts_url[font_id]+ch+".png";
-                    element.height=height;
-                    text_row.appendChild(element);
+                        var img = new Image();
+                        images.push(img);
 
-                    if(count == text.length-1){
-                        postcard_text.appendChild(text_row);
-                    }
+                        img.onload = function() {
+
+                            ch_width=img.width/(img.height/height);
+
+                            if(ch==10){
+                                var image=createIMG(32,height,fonts_url[font_id]);
+                            }
+                            else{
+                                var image=createIMG(ch,height,fonts_url[font_id]);
+                            }
+
+                            if (count==0){
+                                text_row=createTextRow();
+                                word=createWord();
+                            }
+
+                            if(ch!=32&&ch!=10){
+                                word.appendChild(image);
+                                word_width+=ch_width;
+                            }
+
+                            if(ch==32||ch==10||count == text.length-1){
+
+                                if (checkWrap(word_width,row_width,ch_width)&&row_width!=0||checkWrap(word_width,row_width,0)&&row_width==0){
+                                    if(row_width==0&&!checkWordSize(word_width) ||row_width!=0&&checkWordSize(word_width)&&text_row.innerHTML===""){
+                                        space=createWord();
+                                        space.appendChild(createIMG(32,height,fonts_url[font_id]));
+                                        text_row.appendChild(space);
+                                    }
+                                    postcard_text.appendChild(text_row);
+                                    text_row=createTextRow();
+                                    row_width=0;
+                                }
+                                else{
+                                    if(row_width!=0){
+                                        space=createWord();
+                                        space.appendChild(createIMG(32,height,fonts_url[font_id]));
+                                        text_row.appendChild(space);
+                                        row_width+=ch_width;
+                                    }
+                                    if(row_width==0&&ch!=10&&count < text.length-1){
+                                        row_width=0.0000000000001;
+                                    }
+                                }
+
+                                if(!last_ch_space&&word.innerHTML!==""){
+                                    text_row.appendChild(word);
+                                    row_width+=word_width;
+                                    word_width=0;
+                                    word=createWord();
+                                }
+
+                                if(ch==10||count == text.length-1){
+                                    if(row_width==0||ch==32){
+                                        space=createWord();
+                                        space.appendChild(createIMG(32,height,fonts_url[font_id]));
+                                        text_row.appendChild(space);
+                                    }
+                                    postcard_text.appendChild(text_row);
+                                    text_row=createTextRow();
+                                    row_width=0;
+                                }
+
+                                if(ch==32){
+                                    last_ch_space=true;
+                                }
+                                else{
+                                    last_ch_space=false;
+                                }
+                            }
+                            else{
+                                last_ch_space=false;
+                            }
+
+                            resolve();
+                        };
+
+                        img.onerror = function() {
+                            reject(new Error("Ошибка загрузки изображения"));
+                        };
+
+                        if(ch==10){
+                            img.src = fonts_url[font_id]+"32.png";
+                        }else{
+                            img.src = fonts_url[font_id]+ch+".png";
+                        }
+                        
+                    });
                 }
                 changeTextAlign(text_align_all);
+            }
+
+            function checkWrap(word_width,row_width,space_width){
+                var postcard_width=document.getElementById("postcard").offsetWidth-2*document.getElementById("postcard").offsetWidth*padding;
+
+                if(postcard_width-row_width<word_width+space_width){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+
+            function checkWordSize(word_width){
+                var postcard_width=document.getElementById("postcard").offsetWidth-2*document.getElementById("postcard").offsetWidth*padding;
+
+                if(postcard_width<word_width){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+
+            function createTextRow(){
+                var text_row=document.createElement("div");
+                text_row.classList.add("postcard_text_row");
+                return text_row;
+            }
+
+            function createWord(){
+                var word=document.createElement("div");
+                word.classList.add("word");
+                return word;
+            }
+
+            function createIMG(ch,height,url){
+                var element=document.createElement('img');
+                element.src=url+ch+".png";
+                element.height=height;
+                return element;
             }
 
             function changeTextAlign(text_align){
